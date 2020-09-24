@@ -29,33 +29,44 @@ document.querySelector('.promo__genre').textContent = 'драма';
 
 document.querySelector('.promo__bg').style.backgroundImage = 'url(img/bg.jpg)';
 
+
+let inputEl = document.querySelector('.adding__input');
+let movieList = document.querySelector('.promo__interactive-list');
+
+
 movieDB.movies.sort();
-
-
-let listItems = document.querySelectorAll('.promo__interactive-item');
-listItems.forEach(function (item, itemNumber) {
-    item.textContent = `${itemNumber + 1}) ` + movieDB.movies[itemNumber];
-});
-
+createMovieList(movieDB.movies, movieList);
 
 document.querySelector('button').addEventListener('click', (event) => {
     event.preventDefault();
-    let inputField = document.querySelector(".adding__input");
-    let newFilmTitle = inputField.value;
+    let newFilmTitle = inputEl.value;
     if (newFilmTitle !== "") {
-        if(newFilmTitle.length>5){
-            newFilmTitle.slice(0, 5);
+        if (newFilmTitle.length > 21) {
+            newFilmTitle = newFilmTitle.slice(0, 21) + "...";
             console.log(newFilmTitle)
         }
-        let filmsList = document.querySelectorAll('.promo__interactive-item');
-        let newFilmItem = document.createElement('li');
-        newFilmItem.classList.add(filmsList[0].classList[0]);
-        newFilmItem.innerText = `${filmsList.length + 1}) ${newFilmTitle}`;
-        document.querySelector('.promo__interactive-list').append(newFilmItem);
+        if (document.querySelector("[type='checkbox']").checked) {
+            console.log("Это хороший фильм!")
+        }
         movieDB.movies.push(newFilmTitle);
-        inputField.value = "";
+        createMovieList(movieDB.movies, movieList);
+        inputEl.value = "";
     }
-
 });
+
+
+function createMovieList(movieList, parent) {
+    parent.innerHTML = "";
+    movieDB.movies.sort();
+    movieList.forEach((function (elem, i) {
+        parent.innerHTML += `<li class="promo__interactive-item">${i + 1}) ${elem} <div class="delete"></div></li>`;
+    }));
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+        btn.addEventListener('click', function (elem) {
+            btn.parentElement.remove();
+            movieDB.movies.splice(i, 1);
+        })
+    })
+}
 
 
