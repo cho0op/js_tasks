@@ -88,31 +88,44 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    setTimer('.timer', deadline)
+    setTimer('.timer', deadline);
 
     //modal
     const modalEl = document.querySelector('.modal'),
         modalBtnOpenEls = document.querySelectorAll('[data-modal]'),
-        modalBtnCloseEl = document.querySelector('[data-close]');
+        modalBtnCloseEl = document.querySelector('[data-close]'),
+        modalTimerId = setInterval(openModal, 2000);
 
     function closeModal() {
         modalEl.classList.add('hide');
         modalEl.classList.remove('show');
         document.body.style.overflow = 'visible';
+        clearInterval(modalTimerId)
+    }
 
+    function openModal() {
+        modalEl.classList.add('show');
+        modalEl.classList.remove('hide');
+        document.body.style.overflow = 'auto';
+    }
+
+    function scrollModalEvent() {
+        if (document.documentElement.scrollHeight <= document.documentElement.clientHeight + window.pageYOffset) {
+            openModal();
+            window.removeEventListener('scroll', scrollModalEvent);
+            clearInterval(modalTimerId);
+        }
     }
 
     modalBtnOpenEls.forEach(btn => {
         btn.addEventListener('click', () => {
-            modalEl.classList.add('show');
-            modalEl.classList.remove('hide');
-            document.body.style.overflow = 'hidden';
+            openModal();
         });
     });
 
-    modalBtnCloseEl.addEventListener('click', () => {
-        closeModal();
-    });
+    window.addEventListener('scroll', scrollModalEvent);
+
+    modalBtnCloseEl.addEventListener('click', closeModal);
     modalEl.addEventListener('click', event => {
         if (event.target === modalEl) {
             closeModal();
