@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let deadline = '2020-12-31';
 
     function addZero(num) {
-        if (num < 10){
+        if (num < 10) {
             return `0${num}`;
         }
         return num;
@@ -89,6 +89,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     setTimer('.timer', deadline)
+
+    //modal
+    const modalEl = document.querySelector('.modal'),
+        modalBtnOpenEls = document.querySelectorAll('[data-modal]'),
+        modalBtnCloseEl = document.querySelector('[data-close]');
+
+    function closeModal() {
+        modalEl.classList.add('hide');
+        modalEl.classList.remove('show');
+        document.body.style.overflow = 'visible';
+
+    }
+
+    modalBtnOpenEls.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modalEl.classList.add('show');
+            modalEl.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    modalBtnCloseEl.addEventListener('click', () => {
+        closeModal();
+    });
+    modalEl.addEventListener('click', event => {
+        if (event.target === modalEl) {
+            closeModal();
+        }
+    });
+    document.addEventListener('keydown', event => {
+        console.log(event.code);
+        if (event.code === 'Escape' && modalEl.classList.contains('show')) {
+            closeModal();
+        }
+    });
 });
 
 
